@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>ShopStreet</title>
+  <script src="libs/js/aframe/aframe-1.0.4.min.js"></script>
+  <script src="https://rawgit.com/takahirox/aframe-rain/master/build/aframe-rain.js"></script>
+  <script src="libs/js/aframe/physics-system/aframe-physics-system-4.0.1.min.js"></script>
+  <script src="libs/js/aframe/extra/aframe-extra-6.1.0.min.js"></script>
+  <script src="libs/js/aframe/room-component/room-component.min.js"></script>
+  <script src="libs/js/aframe/teleport-controls/aframe-teleport-controls.min.js"></script>
+  <script src="libs/js/aframe/environment-component/aframe-environment-component.min.js"></script>
+  <script src="https://unpkg.com/super-hands@3.0.0/dist/super-hands.min.js"></script>
+  <script src="https://unpkg.com/aframe-controller-cursor-component@0.2.7/dist/aframe-controller-cursor-component.min.js"></script>
+  <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script>
+  <script src="libs/js/aframe/material/aframe-material.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.slim.js"></script>
+  <script src="libs/js/aframe/networked-aframe/networked-aframe-0.6.0.js"></script>
+
+  <script src="js/components/RaycasterListener.js"></script>
+  <script src="js/components/RightHandListener.js"></script>
+  <script src="js/components/LeftHandListener.js"></script>
+
+  <script src="js/components/cloud.js"></script>
+  <script src="js/components/meteo.js"></script>
+  <script src="js/components/seasons.js"></script>
+  <script src="js/components/building.js"></script>
+  <script src="js/components/tree.js"></script>
+  <script src="js/components/ground.js"></script>
+  <script>
+    /*AFRAME.registerComponent('collide-listener', {
+        init() {
+            this.el.addEventListener('collide', e => {
+                console.log(e);
+            });
+
+            this.el.addEventListener('hit', e => {
+                if (e.target.classList.contains('collidable')) {
+                    console.log(e);
+                }
+            });
+        }
+    })*/
+  </script>
+</head>
+<body>
+<a-scene physics="debug: false"
+         cursor="rayOrigin: mouse"
+         networked-scene="app: app;
+                          room: page-2;
+                          adapter: webrtc;
+                          audio: true;
+                          debug: true;">
+
+  <a-assets>
+    <img id="norsys" src="https://avatars1.githubusercontent.com/u/2487851?s=200&v=4" alt="logo norsys" />
+    <img id="orange" src="https://upload.wikimedia.org/wikipedia/commons/c/c8/Orange_logo.svg" alt="logo orange" />
+    <img id="facebook" src="assets/images/logo_facebook.png" alt="logo facebook" />
+
+    <template id="avatar-template">
+      <a-entity class="avatar" networked-audio-source>
+        <a-text class="nametag"
+                value="Hello World"
+                align="center"
+                position="0 0.7 0"
+                rotation="0 180 0"
+                scale="8 8 8"></a-text>
+
+        <a-sphere class="head"
+                  color="#ffffff"
+                  scale="0.45 0.5 0.4"></a-sphere>
+        <a-entity class="face"
+                  position="0 0.05 0">
+          <a-sphere class="eye"
+                    color="#efefef"
+                    position="0.16 0.1 -0.35"
+                    scale="0.12 0.12 0.12">
+            <a-sphere class="pupil"
+                      color="#000"
+                      position="0 0 -1"
+                      scale="0.2 0.2 0.2"></a-sphere>
+          </a-sphere>
+          <a-sphere class="eye"
+                    color="#efefef"
+                    position="-0.16 0.1 -0.35"
+                    scale="0.12 0.12 0.12">
+            <a-sphere class="pupil"
+                      color="#000"
+                      position="0 0 -1"
+                      scale="0.2 0.2 0.2"></a-sphere>
+          </a-sphere>
+        </a-entity>
+      </a-entity>
+    </template>
+  </a-assets>
+
+  <!-- Player -->
+  <!--<a-entity id="rig"
+            movement-controls="constrainToNavMesh: true; fly: false" kinematic-body
+            position="-10 1.6 30"
+            rotation="0 -95 0"
+            networked="template: #avatar-template; attachTemplateToLocal: false;">
+  <a-entity id="camera"
+            camera="userHeight: 1.6; active: true"
+            position="0 1.6 0"
+            look-controls="pointerLockEnabled: true"
+            mouse-cursor>
+      <a-sphere class="head" visible="false"></a-sphere>
+  </a-entity>
+
+  <a-entity id="left-hand"
+            hand-controls="hand: left; handModelStyle: lowPoly; color: #ffcccc"
+            sphere-collider="objects: .form, .portals, #keyboard" super-hands
+            teleport-controls="cameraRig: #rig; teleportOrigin: #camera; button: grip; type: parabolic;"
+            left-hand-listener></a-entity>
+
+  <a-entity id="right-hand"
+            hand-controls="hand: right; handModelStyle: lowPoly; color: #ffcccc"
+            sphere-collider="objects: .form, .portals, #keyboard" super-hands
+            collide-listener controller-cursor right-hand-listener></a-entity>
+</a-entity>-->
+  <a-entity id="player-rig">
+    <a-entity id="player"
+              networked="template: #avatar-template; attachTemplateToLocal: false; persistant: true"
+              camera="userHeight: 1.6"
+              position="-10 1.6 30"
+              wasd-controls look-controls="pointerLockEnabled: true">
+      <a-sphere class="head" visible="false"></a-sphere>
+
+      <a-box width="0.5" height="1.6" depth="0.5" position="0 0.8 0" static-body collide-listener></a-box>
+    </a-entity>
+
+    <a-entity id="left-hand"
+              position="-0.25 0.6 0"
+              hand-controls="hand: left; handModelStyle: lowPoly; color: #ffcccc"
+              sphere-collider="objects: .form, .portals, #keyboard" super-hands
+              teleport-controls="cameraRig: #player-rig; teleportOrigin: #player; button: grip; type: parabolic;"
+              left-hand-listener></a-entity>
+
+    <a-entity id="right-hand"
+            position="0.25 0.6 0"
+            hand-controls="hand: right; handModelStyle: lowPoly; color: #ffcccc"
+            sphere-collider="objects: .form, .portals, #keyboard" super-hands
+            collide-listener controller-cursor right-hand-listener></a-entity>
+  </a-entity>
+
+  <!-- Sky -->
+  <a-sky color="skyblue" meteo="active: false"></a-sky>
+
+  <!-- Ground -->
+  <a-ground width="500" height="500"></a-ground>
+
+  <!-- TODO : FORM TO FINISH -->
+  <!--<a-keyboard is-open="true"></a-keyboard>
+  <a-input position="-2 1 0" placeholder="Username" color="black" width="1"></a-input>
+  <a-input position="-2 0.5 0" type="password" placeholder="Password" color="black" width="1"></a-input>
+
+  <a-rounded position="-4 0.5 0"
+             width="3" height="3.1" radius="0.05"
+             scale="0.3 0.3 0.3">
+      <a-form>
+          <a-switch position="0.2 2.7 0" enabled="true"></a-switch>
+          <a-radio position="0.2 2.4 0" width="3" name="food" label="Burger with fries and pizza" value="pizza"></a-radio>
+          <a-radio position="0.2 2.1 0" width="3" name="food" label="Veggies" checked="true" disabled="true"></a-radio>
+          <a-radio position="0.2 1.8 0" width="3" name="food" label="Ice cream"></a-radio>
+          <a-checkbox position="0.2 1.5 0" width="3" name="stuff" label="I am a checkbox" checked="true"></a-checkbox>
+          <a-checkbox position="0.2 1.2 0" width="3" name="stuff" label="And I am another one" checked="true" disabled="true"></a-checkbox>
+          <a-button position="0.2 0.8 0" name="stuff" value="Click me" type="raised"></a-button>
+          <a-button position="0.2 0.35 0" width="3" name="stuff" value="You cannot click me" disabled="true"></a-button>
+      </a-form>
+  </a-rounded>-->
+
+  <a-tree position="30 0 0" trunkHeight="4"></a-tree>
+
+  <a-building color="orange" position="45 4 -10" href="index.html" title="Orange" image="#orange"></a-building>
+  <a-building color="red" position="25 4 -10" href="index.html" title="Norsys" image="#norsys"></a-building>
+  <a-building color="blue" position="5 4 -10" href="index.html" title="Facebook" image="#facebook"></a-building>
+
+  <a-building color="orange" position="45 4 10" href="index.html" title="Orange" image="#orange"></a-building>
+  <a-building color="red" position="25 4 10" href="index.html" title="Norsys" image="#norsys"></a-building>
+  <a-building color="blue" position="5 4 10" href="index.html" title="Facebook" image="#facebook"></a-building>
+
+  <a-building color="blue" position="5 4 30" modules="4" href="index.html" title="Facebook" image="#facebook"></a-building>
+  <a-text value="coucou" position="-10 2 15"></a-text>
+
+</a-scene>
+<script>
+  // Define custom schema for syncing avatar color, set by random-color
+  NAF.schemas.add({
+    template: '#avatar-template',
+    components: [
+      'position',
+      'rotation',
+      {
+        selector: '.head',
+        component: 'material',
+        property: 'color'
+      },
+      {
+        selector: '.nametag',
+        component: 'text',
+        property: 'value'
+      }
+    ]
+  });
+
+  document.body.addEventListener('clientConnected', function (evt) {
+    document.querySelector('body').setAttribute('client-id', evt.detail.clientId);
+    console.error('clientConnected event. clientId =', evt.detail.clientId);
+  });
+
+  document.body.addEventListener('entityCreated', function (evt) {
+    if (evt.detail.el.querySelector('a-text')) {
+      console.log(evt);
+      evt.detail.el.querySelector('a-text').setAttribute('value', document.querySelector('body').getAttribute('client-id'));
+    }
+  });
+
+  // Called by Networked-Aframe when connected to server
+  function onConnect (evt) {
+    console.log("onConnect", new Date(), evt);
+  }
+</script>
+</body>
+</html>
