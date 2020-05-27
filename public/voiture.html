@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Aframe-Material">
+
+    <script src="https://aframe.io/releases/0.6.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-mirror-component/dist/aframe-mirror-component.min.js"></script>
+    <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script>
+
+    <script>
+		AFRAME.registerComponent('car-motor', {
+			init() {
+				this.el.querySelector('.retroviseur-gauche').addEventListener('click', () => {
+					if (this.el.querySelector('.retroviseur-gauche').getAttribute('rotation').y >= 90) {
+						this.openMirrors();
+					} else {
+						this.foldDownMirrors();
+					}
+				});
+				this.el.querySelector('.retroviseur-droite').addEventListener('click', () => {
+					if (this.el.querySelector('.retroviseur-droite').getAttribute('rotation').y <= -90) {
+						this.openMirrors();
+					} else {
+						this.foldDownMirrors();
+					}
+				});
+
+				this.closeCarBoost();
+				this.turnRight();
+			},
+
+			turnLeft() {
+				let roues = this.el.querySelectorAll('.roues-avant > a-torus');
+				let roueDroite = roues[0];
+				let roueGauche = roues[1];
+				let roueDroiteRotation = roueDroite.getAttribute('rotation').split(' ');
+				roueDroiteRotation = {x: parseInt(roueDroiteRotation[0]), y: parseInt(roueDroiteRotation[1]), z: parseInt(roueDroiteRotation[2])};
+
+				this.turnLeftInterval = setInterval(() => {
+					roues = this.el.querySelectorAll('.roues-avant > a-torus');
+					roueDroite = roues[0];
+					roueGauche = roues[1];
+					roueDroiteRotation = roueDroite.getAttribute('rotation');
+					if (roueDroite.getAttribute('rotation').x === 130) {
+						console.log('interval turn left cleared');
+						clearInterval(this.turnLeftInterval);
+					}
+
+					roueDroite.setAttribute('rotation', {
+							x: roueDroiteRotation.x + 1,
+							y: roueDroiteRotation.y,
+							z: roueDroiteRotation.z
+						});
+                    roueGauche.setAttribute('rotation', {
+							x: roueDroiteRotation.x + 1,
+							y: roueDroiteRotation.y,
+							z: roueDroiteRotation.z
+						});
+				}, 5);
+			},
+
+			turnRight() {
+				let roues = this.el.querySelectorAll('.roues-avant > a-torus');
+				let roueDroite = roues[0];
+				let roueGauche = roues[1];
+				let roueDroiteRotation = roueDroite.getAttribute('rotation');
+				roueDroiteRotation = {x: parseInt(roueDroiteRotation[0]), y: parseInt(roueDroiteRotation[1]), z: parseInt(roueDroiteRotation[2])};
+
+				this.turnRightInterval = setInterval(() => {
+                    roues = this.el.querySelectorAll('.roues-avant > a-torus');
+                    roueDroite = roues[0];
+                    roueGauche = roues[1];
+                    roueDroiteRotation = roueDroite.getAttribute('rotation');
+
+                    if (roueDroite.getAttribute('rotation').x === 50) {
+                        clearInterval(this.turnRightInterval);
+                    }
+
+                    roueDroite.setAttribute('rotation', {
+                        x: roueDroiteRotation.x - 1,
+                        y: roueDroiteRotation.y,
+                        z: roueDroiteRotation.z
+                    });
+                    roueGauche.setAttribute('rotation', {
+                        x: roueDroiteRotation.x - 1,
+                        y: roueDroiteRotation.y,
+                        z: roueDroiteRotation.z
+                    });
+                }, 5);
+			},
+
+            dontTurn() {
+	            let roues = this.el.querySelectorAll('.roues-avant > a-torus');
+	            let roueDroite = roues[0];
+	            let roueGauche = roues[1];
+	            let roueDroiteRotation = roueDroite.getAttribute('rotation').split(' ');
+	            roueDroiteRotation = {x: parseInt(roueDroiteRotation[0]), y: parseInt(roueDroiteRotation[1]), z: parseInt(roueDroiteRotation[2])};
+	            let sensRotation = roueDroiteRotation.x === 130 ? 'right' : 'left';
+	            console.log(roueDroiteRotation.x, sensRotation);
+
+	            this.dontTurnInterval = setInterval(() => {
+		            roues = this.el.querySelectorAll('.roues-avant > a-torus');
+		            roueDroite = roues[0];
+		            roueGauche = roues[1];
+		            roueDroiteRotation = roueDroite.getAttribute('rotation');
+		            if (roueDroite.getAttribute('rotation').x === 90) {
+			            clearInterval(this.dontTurnInterval);
+		            }
+
+		            if (sensRotation === 'right') {
+			            roueDroite.setAttribute('rotation', {
+				            x: roueDroiteRotation.x - 1,
+				            y: roueDroiteRotation.y,
+				            z: roueDroiteRotation.z
+			            });
+			            roueGauche.setAttribute('rotation', {
+				            x: roueDroiteRotation.x - 1,
+				            y: roueDroiteRotation.y,
+				            z: roueDroiteRotation.z
+			            });
+                    } else {
+			            roueDroite.setAttribute('rotation', {
+				            x: roueDroiteRotation.x + 1,
+				            y: roueDroiteRotation.y,
+				            z: roueDroiteRotation.z
+			            });
+			            roueGauche.setAttribute('rotation', {
+				            x: roueDroiteRotation.x + 1,
+				            y: roueDroiteRotation.y,
+				            z: roueDroiteRotation.z
+			            });
+                    }
+	            }, 5);
+            },
+
+			foldDownMirrors() {
+				this.foldDownMirrorsInterval = setInterval(() => {
+					if (this.el.querySelector('.retroviseur-gauche').getAttribute('rotation').y === 90) {
+						clearInterval(this.foldDownMirrorsInterval);
+                    }
+					this.el.querySelector('.retroviseur-gauche').setAttribute('rotation', {x: 0, y: this.el.querySelector('.retroviseur-gauche').getAttribute('rotation').y+1, z: 0});
+                    this.el.querySelector('.retroviseur-droite').setAttribute('rotation', {x: 0, y: this.el.querySelector('.retroviseur-droite').getAttribute('rotation').y-1, z: 0});
+				}, 5);
+			},
+
+			openMirrors() {
+				this.openMirrorsInterval = setInterval(() => {
+					if (this.el.querySelector('.retroviseur-gauche').getAttribute('rotation').y === 0) {
+						clearInterval(this.openMirrorsInterval);
+                    }
+					this.el.querySelector('.retroviseur-gauche').setAttribute('rotation', {x: 0, y: this.el.querySelector('.retroviseur-gauche').getAttribute('rotation').y-1, z: 0});
+                    this.el.querySelector('.retroviseur-droite').setAttribute('rotation', {x: 0, y: this.el.querySelector('.retroviseur-droite').getAttribute('rotation').y+1, z: 0});
+				}, 5);
+			},
+
+            openCarBoost() {
+				let carBoost = this.el.querySelector('.coffre');
+				if (carBoost.getAttribute('rotation') === null) {
+					carBoost.setAttribute('rotation', carBoost.object3D.rotation);
+                }
+				if (carBoost.getAttribute('position') === null) {
+					carBoost.setAttribute('position', carBoost.object3D.position);
+                }
+				this.openCarBoostInterval = setInterval(() => {
+					if (carBoost.getAttribute('rotation').z === -45) {
+						clearInterval(this.openCarBoostInterval);
+                    }
+					carBoost.setAttribute('rotation', {x: 0, y: 0, z: carBoost.getAttribute('rotation').z - 1});
+                }, 5);
+
+	            this.openCarBoostInterval2 = setInterval(() => {
+		            if (carBoost.getAttribute('position').x <= -1.295 && carBoost.getAttribute('position').y >= 0.8) {
+			            clearInterval(this.openCarBoostInterval2);
+		            }
+
+		            let position = carBoost.getAttribute('position');
+
+		            carBoost.setAttribute('position', {x: position.x - 0.01295, y: position.y + 0.008, z: position.z});
+
+		            console.log(carBoost.getAttribute('position'))
+
+	            }, 5);
+            },
+
+            closeCarBoost() {
+	            let carBoost = this.el.querySelector('.coffre');
+	            if (carBoost.getAttribute('rotation') === null) {
+		            carBoost.setAttribute('rotation', carBoost.object3D.rotation);
+	            }
+	            if (carBoost.getAttribute('position') === null) {
+		            carBoost.setAttribute('position', carBoost.object3D.position);
+	            }
+	            this.closeCarBoostInterval = setInterval(() => {
+		            if (carBoost.getAttribute('rotation').z === 0) {
+			            clearInterval(this.closeCarBoostInterval);
+		            }
+		            carBoost.setAttribute('rotation', {x: 0, y: 0, z: carBoost.getAttribute('rotation').z + 1});
+	            }, 5);
+
+	            this.closeCarBoostInterval2 = setInterval(() => {
+		            if (carBoost.getAttribute('position').x >= 0 && carBoost.getAttribute('position').y <= 0) {
+			            clearInterval(this.closeCarBoostInterval2);
+		            }
+
+		            let position = carBoost.getAttribute('position');
+
+		            carBoost.setAttribute('position', {x: position.x + 0.01295, y: position.y - 0.008, z: position.z});
+	            }, 5);
+            }
+		});
+    </script>
+</head>
+<body>
+<a-scene>
+    <a-entity position="0 1.8 4">
+        <a-entity camera look-controls mouse-cursor wasd-controls>
+            <a-cursor fuse="true" color="yellow"></a-cursor>
+        </a-entity>
+    </a-entity>
+
+    <a-entity position="0 0 0" class="voiture" car-motor>
+        <a-entity class="carrosserie" position="0 0.2 0">
+            <!-- chassit -->
+            <a-box width="1" height="0.05" depth="3" position="0 0 0" color="red" metalness="0.5"></a-box>
+
+            <a-box width="0.5" height="0.05" depth="3" position="0.5 0.22 0" rotation="0 0 90" color="red" metalness="0.5"></a-box>
+            <a-box width="0.7" height="0.05" depth="3" position="0.825 0.46 0" color="red" metalness="0.5"></a-box>
+            <a-box width="0.5" height="0.05" depth="3" position="1.15 0.22 0" rotation="0 0 90" color="red" metalness="0.5"></a-box>
+
+            <a-box width="1" height="0.05" depth="3" position="1.64 0 0" color="red" metalness="0.5"></a-box>
+
+            <a-box width="0.5" height="0.05" depth="3" position="2.15 0.22 0" rotation="0 0 90" color="red" metalness="0.5"></a-box>
+            <a-box width="0.7" height="0.05" depth="3" position="2.475 0.46 0" color="red" metalness="0.5"></a-box>
+            <a-box width="0.5" height="0.05" depth="3" position="2.8 0.22 0" rotation="0 0 90" color="red" metalness="0.5"></a-box>
+
+            <a-box width="1" height="0.05" depth="3" position="3.3 0 0" color="red" metalness="0.5"></a-box>
+
+            <a-box width="1" height="0.05" depth="1" rotation="90 0 0" position="3.3 0.5 1.475" color="red" metalness="0.5"></a-box>
+            <a-box width="0.68" height="0.05" depth="0.52" rotation="90 0 0" position="2.46 0.74 1.475" color="red" metalness="0.5"></a-box>
+
+            <a-box width="1" height="0.05" depth="3" position="3.78 0.5 0" rotation="0 0 90" color="red" metalness="0.5"></a-box>
+
+            <a-box width="1" height="0.05" depth="1" rotation="90 0 0" position="3.3 0.5 -1.475" color="red" metalness="0.5"></a-box>
+            <a-box width="0.68" height="0.05" depth="0.52" rotation="90 0 0" position="2.46 0.74 -1.475" color="red" metalness="0.5"></a-box>
+
+            <a-box width="1" height="0.05" depth="3" position="3.3 0.975 0" color="red" metalness="0.5"></a-box>
+
+            <a-box width="1" height="0.05" depth="0.05" rotation="0 0 90" position="2.8 1.5 1.475" color="red" metalness="0.5"></a-box>
+            <a-box width="1" height="0.05" depth="0.05" rotation="0 0 90" position="2.8 1.5 -1.475" color="red" metalness="0.5"></a-box>
+            <a-box width="0.05" height="0.05" depth="3" position="2.8 2 0" color="red" metalness="0.5"></a-box>
+            <a-box width="0.05" height="0.05" depth="3" position="2.8 1 0" color="red" metalness="0.5"></a-box>
+
+            <a-box width="2.5" height="0.05" depth="3" position="1.55 2 0" color="red" metalness="0.5"></a-box>
+
+            <a-box width="0.8" height="0.05" depth="3" rotation="0 0 90" position="-0.475 0.4 0" color="red" metalness="0.5"></a-box>
+            <a-box width="0.8" height="0.05" depth="1" rotation="0 90 90" position="0 0.4 1.475" color="red" metalness="0.5"></a-box>
+            <a-box width="0.8" height="0.05" depth="1" rotation="0 90 90" position="0 0.4 -1.475" color="red" metalness="0.5"></a-box>
+            <a-entity class="coffre" rotation="0 0 -45" position="-1.295 0.8 0" >
+                <!--<a-animation attribute="rotation" to="0 0 -45" dur="5000"></a-animation>
+                <a-animation attribute="position" to="-1.295 0.8 0" dur="5000"></a-animation>-->
+
+                <a-box width="1.45" height="0.05" depth="0.05" rotation="0 0 57" position="-0.08 1.4 1.475" color="red" metalness="0.5"></a-box>
+                <a-box width="1.45" height="0.05" depth="0.05" rotation="0 0 57" position="-0.08 1.4 -1.475" color="red" metalness="0.5"></a-box>
+                <a-box width="0.05" height="0.05" depth="3" rotation="0 0 90" position="-0.475 0.82 0" color="red" metalness="0.5"></a-box>
+            </a-entity>
+
+            <a-box width="1" height="0.05" depth="0.05" rotation="0 0 90" position="2.145 1.5 1.475" color="black" metalness="0"></a-box>
+            <a-box width="1" height="0.05" depth="0.05" rotation="0 0 90" position="2.145 1.5 -1.475" color="black" metalness="0"></a-box>
+
+            <a-box width="1.2" height="0.05" depth="0.05" rotation="0 0 90" position="0.975 1.4 1.475" color="black" metalness="0"></a-box>
+            <a-box width="1.2" height="0.05" depth="0.05" rotation="0 0 90" position="0.975 1.4 -1.475" color="black" metalness="0"></a-box>
+
+            <a-box width="0.5" height="0.35" depth="0.05" position="0.75 0.625 1.475" color="red" metalness="0.5"></a-box>
+            <a-box width="0.5" height="0.35" depth="0.05" position="0.75 0.625 -1.475" color="red" metalness="0.5"></a-box>
+
+            <a-box width="2" height="0.05" depth="0.05" rotation="0 0 90" position="1.55 1 1.475" color="black" metalness="0"></a-box>
+            <a-box width="2" height="0.05" depth="0.05" rotation="0 0 90" position="1.55 1 -1.475" color="black" metalness="0"></a-box>
+
+            <a-entity class="portiere-arriere-droite" position="1.35 0.25 -1.475">
+                <a-box width="0.35" height="0.47" depth="0.05" color="red" metalness="0.5"></a-box>
+                <a-box width="0.35" height="0.53" depth="0.05" rotation="0 0 90" position="-0.09 0.4 0" color="red" metalness="0.5"></a-box>
+            </a-entity>
+
+            <a-entity class="portiere-arriere-gauche" position="1.35 0.25 1.475">
+                <a-box width="0.35" height="0.47" depth="0.05" color="red" metalness="0.5"></a-box>
+                <a-box width="0.35" height="0.53" depth="0.05" rotation="0 0 90" position="-0.09 0.4 0" color="red" metalness="0.5"></a-box>
+            </a-entity>
+
+            <a-entity class="portiere-avant-gauche" position="1.85 0.5 -1.475" >
+                <a-box width="0.55" height="1" depth="0.05" color="red" metalness="0.5"></a-box>
+            </a-entity>
+
+            <a-entity class="portiere-avant-droite" position="1.85 0.5 1.475" >
+                <a-box width="0.55" height="1" depth="0.05" color="red" metalness="0.5"></a-box>
+            </a-entity>
+        </a-entity>
+
+        <a-entity class="retroviseur-gauche" position="2.8 1.3 -1.53">
+            <a-cylinder color="black" height="0.09" radius="0.02" rotation="90 0 0"></a-cylinder>
+            <a-box width="0.2" height="0.1" depth="0.1" color="red" metalness="0.5" rotation="0 90 0" position="0 0 -0.14"></a-box>
+            <a-plane width="0.2" height="0.1" rotation="0 -90 0" position="-0.055 0 -0.14" mirror></a-plane>
+        </a-entity>
+
+        <a-entity class="retroviseur-droite" position="2.8 1.3 1.53">
+            <a-cylinder color="black" height="0.09" radius="0.02" rotation="90 0 0"></a-cylinder>
+            <a-box width="0.2" height="0.1" depth="0.1" color="red" metalness="0.5" rotation="0 90 0" position="0 0 0.14"></a-box>
+            <a-plane width="0.2" height="0.1" rotation="0 -90 0" position="-0.055 0 0.14" mirror></a-plane>
+        </a-entity>
+
+        <a-cylinder color="darkgray" height="3" radius="0.03" rotation="90 0 0" position="0.83 0.28 0" class="roues-arriere">
+            <a-torus color="darkgray" arc="360" radius="0.25" radius-tubular="0.03" position="0 1.5 0" rotation="90 90 0">
+                <a-torus mirror arc="360" radius="0.15" radius-tubular="0.02" class="gente">
+                    <a-cylinder height="0.3" radius="0.03" rotation="0 0 0" color="red" metalness="0.5" mirror></a-cylinder>
+                    <a-cylinder height="0.3" radius="0.03" rotation="0 0 45" color="red" metalness="0.5" mirror></a-cylinder>
+                    <a-cylinder height="0.3" radius="0.03" rotation="0 0 90" color="red" metalness="0.5" mirror></a-cylinder>
+                    <a-cylinder height="0.3" radius="0.03" rotation="0 0 -45" color="red" metalness="0.5" mirror></a-cylinder>
+                </a-torus>
+            </a-torus>
+            <a-torus color="darkgray" arc="360" radius="0.25" radius-tubular="0.03" position="0 -1.5 0" rotation="90 90 0">
+                <a-torus mirror arc="360" radius="0.15" radius-tubular="0.02" class="gente">
+                    <a-cylinder height="0.3" radius="0.03" rotation="0 0 0" color="red" metalness="0.5" mirror></a-cylinder>
+                    <a-cylinder height="0.3" radius="0.03" rotation="0 0 45" color="red" metalness="0.5" mirror></a-cylinder>
+                    <a-cylinder height="0.3" radius="0.03" rotation="0 0 90" color="red" metalness="0.5" mirror></a-cylinder>
+                    <a-cylinder height="0.3" radius="0.03" rotation="0 0 -45" color="red" metalness="0.5" mirror></a-cylinder>
+                </a-torus>
+            </a-torus>
+        </a-cylinder>
+
+        <a-cylinder color="darkgray" height="3" radius="0.03" rotation="90 0 0" position="2.48 0.28 0" class="roues-avant">
+            <a-torus color="darkgray" arc="360" radius="0.25" radius-tubular="0.03" position="0 1.5 0" rotation="90 90 0">
+                <a-torus mirror arc="360" radius="0.15" radius-tubular="0.02" class="gente">
+                    <a-cylinder height="0.3" radius="0.03" rotation="0 0 0" color="red" metalness="0.5" mirror></a-cylinder>
+                    <a-cylinder height="0.3" radius="0.03" rotation="0 0 45" color="red" metalness="0.5" mirror></a-cylinder>
+                    <a-cylinder height="0.3" radius="0.03" rotation="0 0 90" color="red" metalness="0.5" mirror></a-cylinder>
+                    <a-cylinder height="0.3" radius="0.03" rotation="0 0 -45" color="red" metalness="0.5" mirror></a-cylinder>
+                </a-torus>
+            </a-torus>
+            <a-torus color="darkgray" arc="360" radius="0.25" radius-tubular="0.03" position="0 -1.5 0" rotation="90 90 0">
+                <a-torus mirror arc="360" radius="0.15" radius-tubular="0.02" class="gente">
+                    <a-cylinder height="0.3" radius="0.03" rotation="0 0 0" color="red" metalness="0.5" mirror></a-cylinder>
+                    <a-cylinder height="0.3" radius="0.03" rotation="0 0 45" color="red" metalness="0.5" mirror></a-cylinder>
+                    <a-cylinder height="0.3" radius="0.03" rotation="0 0 90" color="red" metalness="0.5" mirror></a-cylinder>
+                    <a-cylinder height="0.3" radius="0.03" rotation="0 0 -45" color="red" metalness="0.5" mirror></a-cylinder>
+                </a-torus>
+            </a-torus>
+        </a-cylinder>
+    </a-entity>
+
+    <a-plane position="0 0 0" rotation="-90 0 0" width="50" height="50" material="color: gray;"></a-plane>
+    <a-sky color="skyblue"></a-sky>
+</a-scene>
+</body>
+</html>
