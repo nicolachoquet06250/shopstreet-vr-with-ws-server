@@ -5,6 +5,8 @@
     <meta name="description" content="Aframe-Material">
 
     <script src="libs/js/aframe/aframe-1.0.4.min.js"></script>
+    <script src="libs/js/aframe/extra/aframe-extra-6.1.0.min.js"></script>
+    <script src="libs/js/aframe/physics-system/aframe-physics-system-4.0.1.min.js"></script>
     <script src="https://unpkg.com/aframe-mirror-component/dist/aframe-mirror-component.min.js"></script>
     <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script>
 
@@ -212,12 +214,14 @@
     </script>
 </head>
 <body>
-<a-scene>
-    <a-entity position="0 0 0">
-        <a-entity position="0 1.6 0"
-                camera="userHeight: 1.6"
-                look-controls="pointerLockEnabled: true"
-                mouse-cursor wasd-controls mouvement-controls>
+<a-scene physics>
+    <a-entity id="rig" position="0 0 0" movement-controls="constrainToNavMesh: true" kinematic-body>
+        <a-entity id="camera"
+                  position="0 1.6 0"
+                  camera="userHeight: 1.6"
+                  look-controls="pointerLockEnabled: true"
+                  wasd-controls
+                  mouse-cursor>
             <a-cursor fuse="true" color="yellow"></a-cursor>
         </a-entity>
 
