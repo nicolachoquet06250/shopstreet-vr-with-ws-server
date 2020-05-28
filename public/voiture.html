@@ -245,6 +245,17 @@
                   mouse-cursor>
             <a-cursor fuse="true" color="yellow"></a-cursor>
         </a-entity>
+
+        <a-entity id="left-hand"
+                  position="-0.25 0.6 0"
+                  hand-controls="hand: left; handModelStyle: lowPoly; color: #ffcccc"
+                  sphere-collider="objects: .form, .portals, #keyboard" super-hands></a-entity>
+
+        <a-entity id="right-hand"
+                  position="0.25 0.6 0"
+                  hand-controls="hand: right; handModelStyle: lowPoly; color: #ffcccc"
+                  sphere-collider="objects: .form, .portals, #keyboard" super-hands
+                  controller-cursor></a-entity>
     </a-entity>
 
     <a-entity position="0 0 0" rotation="0 90 0" class="voiture" dynamic-body car-motor>
