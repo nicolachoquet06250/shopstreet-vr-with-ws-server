@@ -27,9 +27,33 @@
 						this.foldDownMirrors();
 					}
 				});
+				this.el.querySelector('.coffre').addEventListener('click', () => {
+					if (this.el.querySelector('.coffre').getAttribute('rotation').z >= -45) {
+						this.closeCarBoost();
+                    } else {
+						this.openCarBoost();
+                    }
+                });
+				let cmp = 0;
+				let roues = [this.el.querySelector('.roue.avant.gauche'), this.el.querySelector('.roue.avant.droit')];
 
-				this.closeCarBoost();
-				this.turnRight();
+				for (let i = 0; i <= roues.length; i++) {
+					let roue = roues[i];
+					roue.addEventListener('click', () => {
+						if (this.el.querySelector('.roue.avant.gauche').getAttribute('rotation').x === 90) {
+							this.dontTurn();
+						} else {
+							if (cmp % 2 === 0) {
+								this.turnLeft();
+							} else {
+								this.turnRight();
+							}
+							if (i === 0) {
+								cmp++;
+							}
+						}
+					});
+                }
 			},
 
 			turnLeft() {
@@ -315,7 +339,8 @@
             </a-entity>
 
             <a-cylinder color="darkgray" height="3" radius="0.03" rotation="90 0 0" position="0.83 0.28 0" class="roues-arriere">
-                <a-torus color="darkgray" arc="360" radius="0.25" radius-tubular="0.03" position="0 1.5 0" rotation="90 90 0">
+                <a-torus color="darkgray" arc="360" radius="0.25" radius-tubular="0.03"
+                         position="0 1.5 0" rotation="90 90 0" class="roue arriere gauche">
                     <a-torus mirror arc="360" radius="0.15" radius-tubular="0.02" class="gente">
                         <a-cylinder height="0.3" radius="0.03" rotation="0 0 0" color="red" metalness="0.5" mirror></a-cylinder>
                         <a-cylinder height="0.3" radius="0.03" rotation="0 0 45" color="red" metalness="0.5" mirror></a-cylinder>
@@ -323,7 +348,8 @@
                         <a-cylinder height="0.3" radius="0.03" rotation="0 0 -45" color="red" metalness="0.5" mirror></a-cylinder>
                     </a-torus>
                 </a-torus>
-                <a-torus color="darkgray" arc="360" radius="0.25" radius-tubular="0.03" position="0 -1.5 0" rotation="90 90 0">
+                <a-torus color="darkgray" arc="360" radius="0.25" radius-tubular="0.03"
+                         position="0 -1.5 0" rotation="90 90 0" class="roue arriere droite">
                     <a-torus mirror arc="360" radius="0.15" radius-tubular="0.02" class="gente">
                         <a-cylinder height="0.3" radius="0.03" rotation="0 0 0" color="red" metalness="0.5" mirror></a-cylinder>
                         <a-cylinder height="0.3" radius="0.03" rotation="0 0 45" color="red" metalness="0.5" mirror></a-cylinder>
@@ -334,7 +360,8 @@
             </a-cylinder>
 
             <a-cylinder color="darkgray" height="3" radius="0.03" rotation="90 0 0" position="2.48 0.28 0" class="roues-avant">
-                <a-torus color="darkgray" arc="360" radius="0.25" radius-tubular="0.03" position="0 1.5 0" rotation="90 90 0">
+                <a-torus color="darkgray" arc="360" radius="0.25" radius-tubular="0.03"
+                         position="0 1.5 0" rotation="90 90 0" class="roue avant gauche">
                     <a-torus mirror arc="360" radius="0.15" radius-tubular="0.02" class="gente">
                         <a-cylinder height="0.3" radius="0.03" rotation="0 0 0" color="red" metalness="0.5" mirror></a-cylinder>
                         <a-cylinder height="0.3" radius="0.03" rotation="0 0 45" color="red" metalness="0.5" mirror></a-cylinder>
@@ -342,7 +369,8 @@
                         <a-cylinder height="0.3" radius="0.03" rotation="0 0 -45" color="red" metalness="0.5" mirror></a-cylinder>
                     </a-torus>
                 </a-torus>
-                <a-torus color="darkgray" arc="360" radius="0.25" radius-tubular="0.03" position="0 -1.5 0" rotation="90 90 0">
+                <a-torus color="darkgray" arc="360" radius="0.25" radius-tubular="0.03"
+                         position="0 -1.5 0" rotation="90 90 0" class="roue avant droit">
                     <a-torus mirror arc="360" radius="0.15" radius-tubular="0.02" class="gente">
                         <a-cylinder height="0.3" radius="0.03" rotation="0 0 0" color="red" metalness="0.5" mirror></a-cylinder>
                         <a-cylinder height="0.3" radius="0.03" rotation="0 0 45" color="red" metalness="0.5" mirror></a-cylinder>
