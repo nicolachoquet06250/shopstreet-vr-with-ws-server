@@ -14,4 +14,11 @@ router.get('/voiture', function(req, res, next) {
   });
 });
 
+router.get('/escalier', function(req, res, next) {
+  fs.readFile(__dirname + '/../public/escalier.html', 'utf8', (err, data) => {
+    if (err) throw err;
+    res.status(200).send(data);
+  });
+});
+
 module.exports = router;

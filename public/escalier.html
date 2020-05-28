@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Aframe-Material">
+
+    <script src="libs/js/aframe/aframe-1.0.4.min.js"></script>
+    <script src="libs/js/aframe/extra/aframe-extra-6.1.0.min.js"></script>
+    <script src="libs/js/aframe/physics-system/aframe-physics-system-4.0.1.min.js"></script>
+    <script src="https://unpkg.com/aframe-mirror-component/dist/aframe-mirror-component.min.js"></script>
+    <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-controller-cursor-component@0.2.7/dist/aframe-controller-cursor-component.min.js"></script>
+
+    <script>
+        AFRAME.registerComponent('elevator-motor', {
+        	init() {
+                this.el.querySelector('.platform').addEventListener('click', () => {
+	                let elevatorPosition = this.el.querySelector('.platform').getAttribute('position');
+	                if (elevatorPosition.y === 0.05) {
+		                this.elevatorUp();
+	                } else {
+		                this.elevatorDown();
+	                }
+                });
+            },
+            elevatorUp() {
+	            let elevatorPlatformPosition = this.el.querySelector('.platform').getAttribute('position');
+	            let elevatorPosition = this.el.getAttribute('position');
+
+	            let elevatorInterval = setInterval(() => {
+			            if (elevatorPlatformPosition.y === 2.75) {
+				            clearInterval(elevatorInterval);
+			            } else {
+				            let rigPosition = document.querySelector('#rig').getAttribute('position');
+				            let cameraPosition = document.querySelector('#camera').getAttribute('position');
+				            let tmpCameraPosition = {
+					            x: Math.round(rigPosition.x + cameraPosition.x),
+					            y: Math.round(rigPosition.y + cameraPosition.y),
+					            z: Math.round(rigPosition.z + cameraPosition.z)
+				            }
+				            // console.log(rigPosition, cameraPosition, tmpCameraPosition);
+
+				            if (tmpCameraPosition.x <= elevatorPosition.x + 1 && tmpCameraPosition.x >= elevatorPosition.x - 1) {
+				            	console.log('dans l\'assenceur');
+                            }
+
+				            this.el.querySelector('.platform').setAttribute('position', {
+					            x: elevatorPlatformPosition.x,
+					            y: elevatorPlatformPosition.y + 0.01,
+					            z: elevatorPlatformPosition.z
+				            });
+			            }
+		            }, 5);
+            },
+            elevatorDown() {
+	            let elevatorPosition = this.el.querySelector('.platform').getAttribute('position');
+	            let elevatorInterval = setInterval(() => {
+		            if (elevatorPosition.y === 0.05) {
+			            clearInterval(elevatorInterval);
+		            } else {
+			            this.el.querySelector('.platform').setAttribute('position', {
+				            x: elevatorPosition.x,
+				            y: elevatorPosition.y - 0.01,
+				            z: elevatorPosition.z
+			            });
+		            }
+	            }, 5);
+            }
+        })
+    </script>
+</head>
+<body>
+<a-scene physics>
+    <a-entity id="rig" position="0 0 2" movement-controls="constrainToNavMesh: true" kinematic-body>
+        <a-entity id="camera"
+                  position="0 1.6 0"
+                  camera="userHeight: 1.6"
+                  look-controls="pointerLockEnabled: true"
+                  wasd-controls
+                  mouse-cursor>
+            <a-cursor fuse="true" color="yellow"></a-cursor>
+        </a-entity>
+
+        <a-entity id="left-hand"
+                  position="-0.25 0.5 0.02"
+                  hand-controls="hand: left; handModelStyle: lowPoly; color: #ffcccc"
+                  sphere-collider="objects: .form, .portals, #keyboard" super-hands></a-entity>
+
+        <a-entity id="right-hand"
+                  position="0.25 0.5 0.02"
+                  hand-controls="hand: right; handModelStyle: lowPoly; color: #ffcccc"
+                  sphere-collider="objects: .form, .portals, #keyboard" super-hands
+                  controller-cursor></a-entity>
+    </a-entity>
+
+    <a-box position="0 0 0" rotation="-90 0 0" width="50" height="50" depth="0.05" material="color: gray;" static-body></a-box>
+
+    <a-entity class="escalier" position="0 0 -0.3">
+        <!-- first step -->
+        <a-box position="0 0 0" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <!-- second step -->
+        <a-box position="0 0 -0.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.2 -0.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <!-- third step -->
+        <a-box position="0 0 -0.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.2 -0.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.4 -0.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <!-- fourth step -->
+        <a-box position="0 0 -0.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.2 -0.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.4 -0.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.6 -0.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <!-- fifth step -->
+        <a-box position="0 0 -0.8" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.2 -0.8" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.4 -0.8" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.6 -0.8" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.8 -0.8" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <!-- sixth step -->
+        <a-box position="0 0 -1" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.2 -1" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.4 -1" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.6 -1" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.8 -1" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1 -1" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <!-- seventh step -->
+        <a-box position="0 0 -1.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.2 -1.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.4 -1.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.6 -1.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.8 -1.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1 -1.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.2 -1.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <!-- eighth step -->
+        <a-box position="0 0 -1.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.2 -1.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.4 -1.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.6 -1.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.8 -1.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1 -1.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.2 -1.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.2 -1.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.4 -1.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <!-- ninth step -->
+        <a-box position="0 0 -1.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.2 -1.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.4 -1.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.6 -1.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.8 -1.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1 -1.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.2 -1.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.2 -1.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.4 -1.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.6 -1.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <!-- tenth step -->
+        <a-box position="0 0 -1.8" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.2 -1.8" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.4 -1.8" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.6 -1.8" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.8 -1.8" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1 -1.8" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.2 -1.8" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.2 -1.8" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.4 -1.8" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.6 -1.8" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.8 -1.8" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <!-- tenth step -->
+        <a-box position="0 0 -2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.2 -2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.4 -2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.6 -2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.8 -2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1 -2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.2 -2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.2 -2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.4 -2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.6 -2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.8 -2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 2 -2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <!-- eleventh step -->
+        <a-box position="0 0 -2.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.2 -2.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.4 -2.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.6 -2.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.8 -2.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1 -2.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.2 -2.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.2 -2.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.4 -2.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.6 -2.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.8 -2.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 2 -2.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 2.2 -2.2" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <!-- twelvth step -->
+        <a-box position="0 0 -2.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.2 -2.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.4 -2.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.6 -2.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.8 -2.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1 -2.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.2 -2.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.2 -2.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.4 -2.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.6 -2.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.8 -2.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 2 -2.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 2.2 -2.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 2.4 -2.4" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <!-- eleventh step -->
+        <a-box position="0 0 -2.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.2 -2.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.4 -2.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.6 -2.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 0.8 -2.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1 -2.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.2 -2.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.2 -2.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.4 -2.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.6 -2.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 1.8 -2.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 2 -2.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 2.2 -2.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 2.4 -2.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+        <a-box position="0 2.6 -2.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
+    </a-entity>
+
+    <a-entity class="assenceur" position="10 0 10" elevator-motor>
+        <a-box position="0 0.05 0" width="2" depth="2" height="0.02" material="color: yellow;" class="platform" static-body></a-box>
+    </a-entity>
+
+    <a-entity class="platform">
+        <a-box position="0 2.7 -14" rotation="-90 0 0" width="50" height="22" depth="0.05" material="color: gray;"
+               static-body></a-box>
+        <a-box position="0 2.7 13.5" rotation="-90 0 0" width="50" height="24" depth="0.05" material="color: gray;"
+               static-body></a-box>
+        <a-box position="13.5 2.7 -0.75" rotation="-90 0 0" width="23" height="4.5" depth="0.05" material="color: gray;"
+               static-body></a-box>
+        <a-box position="-13.5 2.7 -0.75" rotation="-90 0 0" width="23" height="4.5" depth="0.05" material="color: gray;"
+               static-body></a-box>
+    </a-entity>
+
+    <a-sky color="skyblue"></a-sky>
+</a-scene>
+<script>
+	if (AFRAME.utils.device.isMobile()) {
+		let cursor = document.querySelector('a-cursor');
+		if (cursor) {
+			document.querySelector('#camera').removeChild(cursor);
+		}
+	}
+</script>
+</body>
+</html>
