@@ -119,7 +119,7 @@
 	            let roueDroite = roues[0];
 	            let roueGauche = roues[1];
 	            let roueDroiteRotation = roueDroite.getAttribute('rotation');
-	            
+
 	            let sensRotation = roueDroiteRotation.x === 130 ? 'right' : 'left';
 
 	            this.dontTurnInterval = setInterval(() => {
@@ -246,7 +246,7 @@
             <a-cursor fuse="true" color="yellow"></a-cursor>
         </a-entity>
 
-        <a-entity position="1 0 2.2" rotation="0 90 0" class="voiture" dynamic-body car-motor>
+        <a-entity position="1 0 2.2" rotation="0 90 0" class="voiture" static-body car-motor>
             <a-entity class="carrosserie" position="0 0.2 0">
                 <!-- chassit -->
                 <a-box width="1" height="0.05" depth="3" position="0 0 0" color="red" metalness="0.5"></a-box>
