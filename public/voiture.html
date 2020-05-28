@@ -38,7 +38,7 @@
 				let roues = [this.el.querySelector('.roue.avant.gauche'), this.el.querySelector('.roue.avant.droit')];
 
 				for (let i = 0; i < roues.length; i++) {
-					let roue = roues[i];;
+					let roue = roues[i];
 					roue.addEventListener('click', () => {
 						if (this.el.querySelector('.roue.avant.gauche').getAttribute('rotation').x === 90) {
 							this.dontTurn();
@@ -60,8 +60,7 @@
 				let roues = this.el.querySelectorAll('.roues-avant > a-torus');
 				let roueDroite = roues[0];
 				let roueGauche = roues[1];
-				let roueDroiteRotation = roueDroite.getAttribute('rotation').split(' ');
-				roueDroiteRotation = {x: parseInt(roueDroiteRotation[0]), y: parseInt(roueDroiteRotation[1]), z: parseInt(roueDroiteRotation[2])};
+				let roueDroiteRotation = roueDroite.getAttribute('rotation');
 
 				this.turnLeftInterval = setInterval(() => {
 					roues = this.el.querySelectorAll('.roues-avant > a-torus');
@@ -91,7 +90,6 @@
 				let roueDroite = roues[0];
 				let roueGauche = roues[1];
 				let roueDroiteRotation = roueDroite.getAttribute('rotation');
-				roueDroiteRotation = {x: parseInt(roueDroiteRotation[0]), y: parseInt(roueDroiteRotation[1]), z: parseInt(roueDroiteRotation[2])};
 
 				this.turnRightInterval = setInterval(() => {
                     roues = this.el.querySelectorAll('.roues-avant > a-torus');
@@ -120,10 +118,9 @@
 	            let roues = this.el.querySelectorAll('.roues-avant > a-torus');
 	            let roueDroite = roues[0];
 	            let roueGauche = roues[1];
-	            let roueDroiteRotation = roueDroite.getAttribute('rotation').split(' ');
-	            roueDroiteRotation = {x: parseInt(roueDroiteRotation[0]), y: parseInt(roueDroiteRotation[1]), z: parseInt(roueDroiteRotation[2])};
+	            let roueDroiteRotation = roueDroite.getAttribute('rotation');
+	            
 	            let sensRotation = roueDroiteRotation.x === 130 ? 'right' : 'left';
-	            console.log(roueDroiteRotation.x, sensRotation);
 
 	            this.dontTurnInterval = setInterval(() => {
 		            roues = this.el.querySelectorAll('.roues-avant > a-torus');
