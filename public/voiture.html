@@ -36,10 +36,10 @@
                 });
 				let cmp = 0;
 				let roues = [this.el.querySelector('.roue.avant.gauche'), this.el.querySelector('.roue.avant.droit')];
-                console.log(roues);
 
 				for (let i = 0; i <= roues.length; i++) {
 					let roue = roues[i];
+					console.log(roue, i);
 					roue.addEventListener('click', () => {
 						if (this.el.querySelector('.roue.avant.gauche').getAttribute('rotation').x === 90) {
 							this.dontTurn();
