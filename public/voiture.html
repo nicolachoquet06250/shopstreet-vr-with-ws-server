@@ -9,6 +9,7 @@
     <script src="libs/js/aframe/physics-system/aframe-physics-system-4.0.1.min.js"></script>
     <script src="https://unpkg.com/aframe-mirror-component/dist/aframe-mirror-component.min.js"></script>
     <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-controller-cursor-component@0.2.7/dist/aframe-controller-cursor-component.min.js"></script>
 
     <script>
 		AFRAME.registerComponent('car-motor', {
@@ -393,5 +394,13 @@
     <a-plane position="0 0 0" rotation="-90 0 0" width="50" height="50" material="color: gray;" static-body></a-plane>
     <a-sky color="skyblue"></a-sky>
 </a-scene>
+<script>
+    if (AFRAME.utils.device.isMobile()) {
+    	let cursor = document.querySelector('a-cursor');
+    	if (cursor) {
+    		document.querySelector('#camera').removeChild(cursor);
+        }
+    }
+</script>
 </body>
 </html>
