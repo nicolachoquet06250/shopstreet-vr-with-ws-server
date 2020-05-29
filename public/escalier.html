@@ -24,40 +24,40 @@
                 });
             },
             elevatorUp() {
-	            let elevatorPlatformPosition = this.el.querySelector('.platform').getAttribute('position');
-	            let elevatorPosition = this.el.getAttribute('position');
-
 	            let elevatorInterval = setInterval(() => {
-			            if (elevatorPlatformPosition.y === 2.75) {
-				            clearInterval(elevatorInterval);
-			            } else {
-				            let rigPosition = document.querySelector('#rig').getAttribute('position');
-				            let cameraPosition = document.querySelector('#camera').getAttribute('position');
-				            let tmpCameraPosition = {
-					            x: Math.round(rigPosition.x + cameraPosition.x),
-					            y: Math.round(rigPosition.y + cameraPosition.y),
-					            z: Math.round(rigPosition.z + cameraPosition.z)
-				            }
+		            let elevatorPlatformPosition = this.el.querySelector('.platform').getAttribute('position');
+		            let elevatorPosition = this.el.getAttribute('position');
+		            
+                    if (elevatorPlatformPosition.y === 2.75) {
+                        clearInterval(elevatorInterval);
+                    } else {
+                        let rigPosition = document.querySelector('#rig').getAttribute('position');
+                        let cameraPosition = document.querySelector('#camera').getAttribute('position');
+                        let tmpCameraPosition = {
+                            x: Math.round(rigPosition.x + cameraPosition.x),
+                            y: Math.round(rigPosition.y + cameraPosition.y),
+                            z: Math.round(rigPosition.z + cameraPosition.z)
+                        }
 
-				            if (tmpCameraPosition.x <= elevatorPosition.x + 1
-                                && tmpCameraPosition.x >= elevatorPosition.x - 1
-                                && tmpCameraPosition.z <= elevatorPosition.z + 1
-                                && tmpCameraPosition.z >= elevatorPosition.z - 1) {
-				            	console.log('dans l\'assenceur');
-					            document.querySelector('#camera').setAttribute('position', {
-						            x: cameraPosition.x,
-						            y: cameraPosition.y + 0.01,
-						            z: cameraPosition.z
-					            });
-                            }
+                        if (tmpCameraPosition.x <= elevatorPosition.x + 1
+                            && tmpCameraPosition.x >= elevatorPosition.x - 1
+                            && tmpCameraPosition.z <= elevatorPosition.z + 1
+                            && tmpCameraPosition.z >= elevatorPosition.z - 1) {
+                            console.log('dans l\'assenceur');
+                            document.querySelector('#camera').setAttribute('position', {
+                                x: cameraPosition.x,
+                                y: cameraPosition.y + 0.01,
+                                z: cameraPosition.z
+                            });
+                        }
 
-				            this.el.querySelector('.platform').setAttribute('position', {
-					            x: elevatorPlatformPosition.x,
-					            y: elevatorPlatformPosition.y + 0.01,
-					            z: elevatorPlatformPosition.z
-				            });
-			            }
-		            }, 5);
+                        this.el.querySelector('.platform').setAttribute('position', {
+                            x: elevatorPlatformPosition.x,
+                            y: elevatorPlatformPosition.y + 0.01,
+                            z: elevatorPlatformPosition.z
+                        });
+                    }
+                }, 5);
             },
             elevatorDown() {
 	            let elevatorPosition = this.el.querySelector('.platform').getAttribute('position');
