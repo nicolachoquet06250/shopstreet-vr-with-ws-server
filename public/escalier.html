@@ -16,22 +16,21 @@
         	init() {
                 this.el.querySelector('.platform').addEventListener('click', () => {
 	                let elevatorPosition = this.el.querySelector('.platform').getAttribute('position');
-	                if (elevatorPosition.y === 0.05) {
-		                this.elevatorUp();
+	                if (elevatorPosition.y <= 0.05) {
+		                this.elevatorMoveUp();
 	                } else {
-		                this.elevatorDown();
+		                this.elevatorMoveDown();
 	                }
                 });
             },
-            elevatorUp() {
-	            let elevatorInterval = setInterval(() => {
+            elevatorMoveUp() {
+	            let elevatorMoveUpInterval = setInterval(() => {
 		            let elevatorPlatformPosition = this.el.querySelector('.platform').getAttribute('position');
 		            let elevatorPosition = this.el.getAttribute('position');
 
-		            console.log(elevatorPlatformPosition.y.toFixed(2));
-                    if (elevatorPlatformPosition.y >= 2.75) {
+                    if (elevatorPlatformPosition.y.toFixed(2) >= 2.75) {
 	                    console.log('terminé');
-                        clearInterval(elevatorInterval);
+                        clearInterval(elevatorMoveUpInterval);
                     } else {
                         let rigPosition = document.querySelector('#rig').getAttribute('position');
                         let cameraPosition = document.querySelector('#camera').getAttribute('position');
@@ -46,10 +45,10 @@
                             && tmpCameraPosition.z <= elevatorPosition.z + 1
                             && tmpCameraPosition.z >= elevatorPosition.z - 1) {
                             console.log('dans l\'assenceur');
-                            document.querySelector('#rig').setAttribute('position', {
-                                x: rigPosition.x,
-                                y: rigPosition.y + 0.01,
-                                z: rigPosition.z
+                            document.querySelector('#camera').setAttribute('position', {
+                                x: cameraPosition.x,
+                                y: cameraPosition.y + 0.01,
+                                z: cameraPosition.z
                             });
                         }
 
@@ -61,16 +60,39 @@
                     }
                 }, 5);
             },
-            elevatorDown() {
-	            let elevatorPosition = this.el.querySelector('.platform').getAttribute('position');
-	            let elevatorInterval = setInterval(() => {
-		            if (elevatorPosition.y === 0.05) {
-			            clearInterval(elevatorInterval);
+            elevatorMoveDown() {
+	            let elevatorMoveDownInterval = setInterval(() => {
+		            let elevatorPlatformPosition = this.el.querySelector('.platform').getAttribute('position');
+		            let elevatorPosition = this.el.getAttribute('position');
+
+		            if (elevatorPlatformPosition.y.toFixed(2) <= 0.05) {
+			            console.log('terminé');
+			            clearInterval(elevatorMoveDownInterval);
 		            } else {
+			            let rigPosition = document.querySelector('#rig').getAttribute('position');
+			            let cameraPosition = document.querySelector('#camera').getAttribute('position');
+			            let tmpCameraPosition = {
+				            x: Math.round(rigPosition.x + cameraPosition.x),
+				            y: Math.round(rigPosition.y + cameraPosition.y),
+				            z: Math.round(rigPosition.z + cameraPosition.z)
+			            }
+
+			            if (tmpCameraPosition.x <= elevatorPosition.x + 1
+				            && tmpCameraPosition.x >= elevatorPosition.x - 1
+				            && tmpCameraPosition.z <= elevatorPosition.z + 1
+				            && tmpCameraPosition.z >= elevatorPosition.z - 1) {
+				            console.log('dans l\'assenceur');
+				            document.querySelector('#camera').setAttribute('position', {
+					            x: cameraPosition.x,
+					            y: cameraPosition.y - 0.01,
+					            z: cameraPosition.z
+				            });
+			            }
+
 			            this.el.querySelector('.platform').setAttribute('position', {
-				            x: elevatorPosition.x,
-				            y: elevatorPosition.y - 0.01,
-				            z: elevatorPosition.z
+				            x: elevatorPlatformPosition.x,
+				            y: elevatorPlatformPosition.y - 0.01,
+				            z: elevatorPlatformPosition.z
 			            });
 		            }
 	            }, 5);
@@ -234,14 +256,24 @@
     </a-entity>
 
     <a-entity class="assenceur" position="10 0.05 10" elevator-motor>
-        <a-box position="0 0.05 0" width="2" depth="2" height="0.02" material="color: yellow;" class="platform" static-body></a-box>
+        <a-box position="0 0.05 0" width="5" depth="4" height="0.02" material="color: yellow;"
+               class="platform" static-body>
+            <a-box position="0 1.5 -2" width="5" height="3" depth="0.02"
+                   material="color: black; opacity: 0.5" static-body></a-box>
+            <a-box position="0 1.5 2" width="5" height="3" depth="0.02"
+                   material="color: black; opacity: 0.5" static-body></a-box>
+            <a-box position="0 3 0" width="5" depth="4.04" height="0.02"
+                   material="color: black; opacity: 0.5"></a-box>
+            <a-box position="2.5 1.5 0" width="0.02" depth="4" height="3"
+                   material="color: black; opacity: 0.5" static-body></a-box>
+        </a-box>
     </a-entity>
 
     <a-entity class="platform">
         <a-box position="0 2.7 -14" rotation="-90 0 0" width="50" height="22" depth="0.05" material="color: gray;"
                static-body></a-box>
-        <a-box position="0 2.7 13.5" rotation="-90 0 0" width="50" height="24" depth="0.05" material="color: gray;"
-               static-body></a-box>
+        <!--<a-box position="0 2.7 13.5" rotation="-90 0 0" width="50" height="24" depth="0.05" material="color: gray;"
+               static-body></a-box>-->
         <a-box position="13.5 2.7 -0.75" rotation="-90 0 0" width="23" height="4.5" depth="0.05" material="color: gray;"
                static-body></a-box>
         <a-box position="-13.5 2.7 -0.75" rotation="-90 0 0" width="23" height="4.5" depth="0.05" material="color: gray;"
