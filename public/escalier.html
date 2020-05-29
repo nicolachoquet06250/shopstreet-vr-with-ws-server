@@ -27,8 +27,10 @@
 	            let elevatorInterval = setInterval(() => {
 		            let elevatorPlatformPosition = this.el.querySelector('.platform').getAttribute('position');
 		            let elevatorPosition = this.el.getAttribute('position');
-		            
+
+		            console.log(elevatorPlatformPosition.y);
                     if (elevatorPlatformPosition.y === 2.75) {
+	                    console.log('terminé');
                         clearInterval(elevatorInterval);
                     } else {
                         let rigPosition = document.querySelector('#rig').getAttribute('position');
