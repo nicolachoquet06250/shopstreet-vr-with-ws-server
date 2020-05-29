@@ -44,6 +44,11 @@
                                 && tmpCameraPosition.z <= elevatorPosition.z + 1
                                 && tmpCameraPosition.z >= elevatorPosition.z - 1) {
 				            	console.log('dans l\'assenceur');
+					            document.querySelector('#camera').setAttribute('position', {
+						            x: cameraPosition.x,
+						            y: cameraPosition.y + 0.01,
+						            z: cameraPosition.z
+					            });
                             }
 
 				            this.el.querySelector('.platform').setAttribute('position', {
@@ -51,11 +56,6 @@
 					            y: elevatorPlatformPosition.y + 0.01,
 					            z: elevatorPlatformPosition.z
 				            });
-				            document.querySelector('#rig').setAttribute('position', {
-					            x: rigPosition.x,
-					            y: rigPosition.y + 0.01,
-					            z: rigPosition.z
-                            })
 			            }
 		            }, 5);
             },
