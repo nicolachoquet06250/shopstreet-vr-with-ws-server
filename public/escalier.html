@@ -40,7 +40,10 @@
 				            }
 				            // console.log(rigPosition, cameraPosition, tmpCameraPosition);
 
-				            if (tmpCameraPosition.x <= elevatorPosition.x + 1 && tmpCameraPosition.x >= elevatorPosition.x - 1) {
+				            if (tmpCameraPosition.x <= elevatorPosition.x + 1
+                                && tmpCameraPosition.x >= elevatorPosition.x - 1
+                                && tmpCameraPosition.z <= elevatorPosition.z + 1
+                                && tmpCameraPosition.z >= elevatorPosition.z - 1) {
 				            	console.log('dans l\'assenceur');
                             }
 
@@ -224,7 +227,7 @@
         <a-box position="0 2.6 -2.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
     </a-entity>
 
-    <a-entity class="assenceur" position="10 0 10" elevator-motor>
+    <a-entity class="assenceur" position="10 0.05 10" elevator-motor>
         <a-box position="0 0.05 0" width="2" depth="2" height="0.02" material="color: yellow;" class="platform" static-body></a-box>
     </a-entity>
 
