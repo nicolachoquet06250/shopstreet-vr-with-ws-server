@@ -28,7 +28,7 @@
 		            let elevatorPlatformPosition = this.el.querySelector('.platform').getAttribute('position');
 		            let elevatorPosition = this.el.getAttribute('position');
 
-		            console.log(Math.round(elevatorPlatformPosition.y));
+		            console.log(elevatorPlatformPosition.y.toFixed(2));
                     if (elevatorPlatformPosition.y === 2.75) {
 	                    console.log('terminé');
                         clearInterval(elevatorInterval);
