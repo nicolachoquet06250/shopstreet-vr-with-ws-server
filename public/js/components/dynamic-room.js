@@ -1,15 +1,11 @@
 AFRAME.registerComponent('dynamic-room', {
+	schema: {
+		room: {default: 'default'},
+		debug: {default: false}
+	},
 	init: function () {
-		// var el = this.el;
+		var el = this.el;
 		var params = this.getUrlParams();
-
-		// if (!params.room) {
-		// 	window.alert('Please add a room name in the URL, eg. ?room=myroom');
-		// }
-
-		// var webrtc = params.hasOwnProperty('webrtc');
-		// var adapter = webrtc ? 'easyrtc' : 'wseasyrtc';
-		// var voice = params.hasOwnProperty('voice');
 
 		// Set local user's name
 		var player = document.getElementById('player');
@@ -17,13 +13,15 @@ AFRAME.registerComponent('dynamic-room', {
 		myNametag.setAttribute('text', 'value', params.username);
 
 		// Setup networked-scene
-		// var networkedComp = {
-		// 	room: params.room,
-		// 	adapter: adapter,
-		// 	audio: voice
-		// };
-		// console.info('Init networked-aframe with settings:', networkedComp);
-		// el.setAttribute('networked-scene', networkedComp);
+		var networkedComp = {
+			app: 'shop-street',
+			room: this.data.room,
+			adapter: 'webrtc',
+			audio: true,
+			debug: this.data.debug
+		};
+		console.info('Init networked-aframe with settings:', networkedComp);
+		el.setAttribute('networked-scene', networkedComp);
 	},
 
 	getUrlParams: function () {
