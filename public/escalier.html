@@ -7,29 +7,30 @@
     <script src="libs/js/aframe/aframe-1.0.4.min.js"></script>
     <script src="libs/js/aframe/extra/aframe-extra-6.1.0.min.js"></script>
     <script src="libs/js/aframe/physics-system/aframe-physics-system-4.0.1.min.js"></script>
-    <script src="https://unpkg.com/aframe-mirror-component/dist/aframe-mirror-component.min.js"></script>
     <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script>
     <script src="https://unpkg.com/aframe-controller-cursor-component@0.2.7/dist/aframe-controller-cursor-component.min.js"></script>
-
     <script>
         AFRAME.registerComponent('elevator-motor', {
-        	init() {
-                this.el.querySelector('.platform').addEventListener('click', () => {
-	                let elevatorPosition = this.el.querySelector('.platform').getAttribute('position');
-	                if (elevatorPosition.y <= 0.05) {
-		                this.elevatorMoveUp();
-	                } else {
-		                this.elevatorMoveDown();
-	                }
-                });
+        	schema: {
+        		stepNumber: {default: 1},
+                stepHeight: {default: 2.7},
+                currentStep: {default: 0}
             },
-            elevatorMoveUp() {
+        	init() {
+                this.addKeyBoard();
+            },
+            elevatorMoveUp(step) {
 	            let elevatorMoveUpInterval = setInterval(() => {
-		            let elevatorPlatformPosition = this.el.querySelector('.platform').getAttribute('position');
 		            let elevatorPosition = this.el.getAttribute('position');
 
-                    if (elevatorPlatformPosition.y.toFixed(2) >= 2.75) {
-	                    console.log('terminé');
+                    if (elevatorPosition.y.toFixed(2) >= step * (this.data.stepHeight + 0.5)) {
+	                    let key = this.el.querySelector('.keyboard').querySelector(`[step="${step}"]`);
+	                    key.dispatchEvent(new CustomEvent('arrived', {
+		                    detail: {
+			                    target: key,
+			                    step: step
+		                    }
+	                    }));
                         clearInterval(elevatorMoveUpInterval);
                     } else {
                         let rigPosition = document.querySelector('#rig').getAttribute('position');
@@ -44,29 +45,34 @@
                             && tmpCameraPosition.x >= elevatorPosition.x - 1
                             && tmpCameraPosition.z <= elevatorPosition.z + 1
                             && tmpCameraPosition.z >= elevatorPosition.z - 1) {
-                            console.log('dans l\'assenceur');
-                            document.querySelector('#camera').setAttribute('position', {
-                                x: cameraPosition.x,
-                                y: cameraPosition.y + 0.01,
-                                z: cameraPosition.z
-                            });
+                            document.querySelector('#camera')
+                                .setAttribute('position', {
+                                    x: cameraPosition.x,
+                                    y: cameraPosition.y + 0.01,
+                                    z: cameraPosition.z
+                                });
                         }
 
-                        this.el.querySelector('.platform').setAttribute('position', {
-                            x: elevatorPlatformPosition.x,
-                            y: elevatorPlatformPosition.y + 0.01,
-                            z: elevatorPlatformPosition.z
+                        this.el.setAttribute('position', {
+                            x: elevatorPosition.x,
+                            y: elevatorPosition.y + 0.01,
+                            z: elevatorPosition.z
                         });
                     }
                 }, 5);
             },
-            elevatorMoveDown() {
+            elevatorMoveDown(step) {
 	            let elevatorMoveDownInterval = setInterval(() => {
-		            let elevatorPlatformPosition = this.el.querySelector('.platform').getAttribute('position');
 		            let elevatorPosition = this.el.getAttribute('position');
 
-		            if (elevatorPlatformPosition.y.toFixed(2) <= 0.05) {
-			            console.log('terminé');
+		            if (elevatorPosition.y.toFixed(2) <= step * (this.data.stepHeight + 0.5)) {
+			            let key = this.el.querySelector('.keyboard').querySelector(`[step="${step}"]`);
+			            key.dispatchEvent(new CustomEvent('arrived', {
+			            	detail: {
+			            		target: key,
+                                step: step
+                            }
+                        }));
 			            clearInterval(elevatorMoveDownInterval);
 		            } else {
 			            let rigPosition = document.querySelector('#rig').getAttribute('position');
@@ -81,7 +87,6 @@
 				            && tmpCameraPosition.x >= elevatorPosition.x - 1
 				            && tmpCameraPosition.z <= elevatorPosition.z + 1
 				            && tmpCameraPosition.z >= elevatorPosition.z - 1) {
-				            console.log('dans l\'assenceur');
 				            document.querySelector('#camera').setAttribute('position', {
 					            x: cameraPosition.x,
 					            y: cameraPosition.y - 0.01,
@@ -89,39 +94,98 @@
 				            });
 			            }
 
-			            this.el.querySelector('.platform').setAttribute('position', {
-				            x: elevatorPlatformPosition.x,
-				            y: elevatorPlatformPosition.y - 0.01,
-				            z: elevatorPlatformPosition.z
+			            this.el.setAttribute('position', {
+				            x: elevatorPosition.x,
+				            y: elevatorPosition.y - 0.01,
+				            z: elevatorPosition.z
 			            });
 		            }
 	            }, 5);
+            },
+            addKeyBoard() {
+        		let keyboard = document.createElement('a-box');
+	            keyboard.classList.add('keyboard');
+	            keyboard.setAttribute('width', (this.data.stepNumber + 2) * 0.02);
+	            keyboard.setAttribute('height', 0.06);
+	            keyboard.setAttribute('depth', 0.005);
+	            keyboard.setAttribute('material', {transparent: true});
+	            keyboard.setAttribute('position', {x: -2, y: -0.5, z: 0})
+
+                for (let step = 0; step <= this.data.stepNumber; step++) {
+                	let key = document.createElement('a-box');
+                	key.setAttribute('width', 0.04);
+                	key.setAttribute('height', 0.04);
+                	key.setAttribute('depth', 0.005);
+                	key.setAttribute('color', 'gray');
+	                key.setAttribute('metalness', 0.5);
+	                key.setAttribute('step', `${step}`);
+	                key.setAttribute('hoverable', '');
+	                key.setAttribute('position', {x: step * 0.06, y: 0, z: 0.02});
+
+	                let text = document.createElement('a-entity');
+	                text.setAttribute('text', {value: step});
+	                text.setAttribute('position', {x: 0.48, y: 0, z: 0.005});
+
+	                key.appendChild(text);
+
+	                key.addEventListener('click', () => {
+	                	if (this.data.currentStep < step) {
+	                		this.elevatorMoveUp(step);
+                        } else if (this.data.currentStep > step) {
+	                		this.elevatorMoveDown(step);
+                        }
+	                	text.setAttribute('text', {...text.getAttribute('text'), color: 'lightblue'});
+                    });
+
+	                key.addEventListener('mouseenter', () => {
+		                key.querySelector('[text]')
+			                .setAttribute('text', {...key.querySelector('[text]').getAttribute('text'), color: 'lightblue'});
+                    });
+                    key.addEventListener('mouseleave', () => {
+	                	key.click();
+                    });
+
+	                key.addEventListener('onmouseover', () => {
+	                	key.querySelector('[text]')
+                            .setAttribute('text', {...key.querySelector('[text]').getAttribute('text'), color: 'lightblue'});
+                    });
+	                key.addEventListener('onmouseout', () => {
+		                key.click();
+                    });
+
+	                key.addEventListener('arrived', e => {
+	                	this.data.currentStep = e.detail.step;
+	                	e.detail.target.querySelector('[text]')
+                            .setAttribute('text', {...text.getAttribute('text'), color: 'white'});
+                    });
+
+	                keyboard.appendChild(key);
+                }
+                this.el.querySelector('.mur-droit').appendChild(keyboard);
             }
         })
     </script>
 </head>
 <body>
-<a-scene physics>
+<a-scene physics cursor="rayOrigin: mouse">
     <a-entity id="rig" position="0 0 2" movement-controls="constrainToNavMesh: true" kinematic-body>
         <a-entity id="camera"
                   position="0 1.6 0"
                   camera="userHeight: 1.6"
                   look-controls="pointerLockEnabled: true"
-                  wasd-controls
-                  mouse-cursor>
-            <a-cursor fuse="true" color="yellow"></a-cursor>
-        </a-entity>
+                  wasd-controls></a-entity>
 
         <a-entity id="left-hand"
                   position="-0.25 0.5 0.02"
                   hand-controls="hand: left; handModelStyle: lowPoly; color: #ffcccc"
-                  sphere-collider="objects: .form, .portals, #keyboard" super-hands></a-entity>
+                  sphere-collider="objects: .form, .portals, #keyboard" super-hands
+                  cursor></a-entity>
 
         <a-entity id="right-hand"
                   position="0.25 0.5 0.02"
                   hand-controls="hand: right; handModelStyle: lowPoly; color: #ffcccc"
                   sphere-collider="objects: .form, .portals, #keyboard" super-hands
-                  controller-cursor></a-entity>
+                  cursor></a-entity>
     </a-entity>
 
     <a-box position="0 0 0" rotation="-90 0 0" width="50" height="50" depth="0.05" material="color: gray;" static-body></a-box>
@@ -255,18 +319,17 @@
         <a-box position="0 2.6 -2.6" width="1" height="0.3" depth="0.2" color="blue" metalness="0.5" static-body></a-box>
     </a-entity>
 
-    <a-entity class="assenceur" position="10 0.05 10" elevator-motor>
-        <a-box position="0 0.05 0" width="5" depth="4" height="0.02" material="color: yellow;"
-               class="platform" static-body>
-            <a-box position="0 1.5 -2" width="5" height="3" depth="0.02"
-                   material="color: black; opacity: 0.5" static-body></a-box>
-            <a-box position="0 1.5 2" width="5" height="3" depth="0.02"
-                   material="color: black; opacity: 0.5" static-body></a-box>
-            <a-box position="0 3 0" width="5" depth="4.04" height="0.02"
-                   material="color: black; opacity: 0.5"></a-box>
-            <a-box position="2.5 1.5 0" width="0.02" depth="4" height="3"
-                   material="color: black; opacity: 0.5" static-body></a-box>
-        </a-box>
+    <a-entity class="assenceur" position="10 0 10" elevator-motor>
+        <a-box position="0 0.05 0" width="5" depth="4" height="0.02" class="platform"
+               material="color: gray; metalness: 0.5" static-body></a-box>
+        <a-box position="0 1.4 -2" width="5" height="2.7" depth="0.02" class="mur-droit"
+               material="color: black; opacity: 0.5"></a-box>
+        <a-box position="0 1.4 2" width="5" height="2.7" depth="0.02" class="mur-gauche"
+               material="color: black; opacity: 0.5"></a-box>
+        <a-box position="2.5 1.4 0" width="0.02" depth="4" height="2.7" class="mur-arriere"
+               material="color: black; opacity: 0.5"></a-box>
+        <a-box position="0 2.75 0" width="5" depth="4.04" height="0.02" class="toit"
+               material="color: black; opacity: 0.5" static-body></a-box>
     </a-entity>
 
     <a-entity class="platform">
