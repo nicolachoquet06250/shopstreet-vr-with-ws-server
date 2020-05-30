@@ -28,31 +28,11 @@
   <script src="js/components/tree.js"></script>
   <script src="js/components/ground.js"></script>
   <script src="js/components/dynamic-room.js"></script>
-  <script>
-    /*AFRAME.registerComponent('collide-listener', {
-        init() {
-            this.el.addEventListener('collide', e => {
-                console.log(e);
-            });
-
-            this.el.addEventListener('hit', e => {
-                if (e.target.classList.contains('collidable')) {
-                    console.log(e);
-                }
-            });
-        }
-    })*/
-  </script>
 </head>
 <body>
 <a-scene physics="debug: false"
          cursor="rayOrigin: mouse"
-         networked-scene="app: app;
-                          room: page-2;
-                          adapter: webrtc;
-                          audio: true;
-                          debug: true;"
-         >
+         dynamic-room>
 
   <a-assets>
     <img id="norsys" src="https://avatars1.githubusercontent.com/u/2487851?s=200&v=4" alt="logo norsys" />
