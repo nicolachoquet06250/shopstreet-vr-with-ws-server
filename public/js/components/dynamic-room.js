@@ -10,7 +10,7 @@ AFRAME.registerComponent('dynamic-room', {
 		// Set local user's name
 		var player = document.getElementById('player');
 		var myNametag = player.querySelector('.nametag');
-		myNametag.setAttribute('text', 'value', params.username);
+		// myNametag.setAttribute('text', 'value', params.username);
 
 		// Setup networked-scene
 		var networkedComp = {
